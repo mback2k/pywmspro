@@ -4,6 +4,9 @@ version = "0.1.0"
 description = ""
 authors = ["Marc Hoersken <info@marc-hoersken.de>"]
 readme = "README.md"
+packages = [
+    { include = "wmspro" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"
