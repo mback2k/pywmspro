@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "pywmspro"
+version = "0.1.0"
+description = ""
+authors = ["Marc Hoersken <info@marc-hoersken.de>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+aiohttp = "^3.10.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
