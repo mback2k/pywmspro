@@ -49,8 +49,13 @@ class WebControlPro:
         self.rooms = {room["id"]: Room(self, **room) for room in config["rooms"]}
         self.scenes = {scene["id"]: Scene(self, **scene) for scene in config["scenes"]}
 
+    def dest(self, name: str) -> Destination:
+        for dest in self.dests.values():
+            if dest.name == name:
+                return dest
+        return None
 
-async def amain():
+async def async_main_test():
     async with ClientSession() as session:
         control = WebControlPro("webcontrol", session)
         pprint.pprint(await control.ping())
@@ -60,9 +65,13 @@ async def amain():
             await dest.refresh()
             for action in dest.actions.values():
                 print((action, action.data))
-        
-        print(control.dests[97358].actions[0])
+
+        action = control.dest("Licht").action(WMS_WebControl_pro_API_actionDescription.LightDimming)
+        print(action)
+        response = await action(percentage=100)
+        print(response)
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(amain())
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(async_main_test())

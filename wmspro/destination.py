@@ -1,4 +1,4 @@
-from .const import WMS_WebControl_pro_API_animationType
+from .const import WMS_WebControl_pro_API_animationType, WMS_WebControl_pro_API_actionDescription, WMS_WebControl_pro_API_drivingCause
 from .action import Action
 
 class Destination:
@@ -6,8 +6,11 @@ class Destination:
         self._control = control
         self._id = id
         self._names = names
-        self._actions = {action["id"]: Action(self._control, **action) for action in actions}
+        self._actions = {action["id"]: Action(self, **action) for action in actions}
         self._animationType = WMS_WebControl_pro_API_animationType(animationType)
+        self._drivingCause = WMS_WebControl_pro_API_drivingCause.Unknown
+        self._heartbeatError = None
+        self._blocking = None
 
     def __str__(self):
         return self.name
@@ -44,11 +47,30 @@ class Destination:
                 return room
         return None
 
-    async def refresh(self):
+    async def refresh(self) -> bool:
         status = await self._control._getStatus(self._id)
+        if not "details" in status:
+            return False
+        refreshed = False
         for detail in status["details"]:
             if detail["destinationId"] != self._id:
                 continue
+            if not "data" in detail:
+                continue
+            refreshed = True
+            data = detail["data"]
+            if "drivingCause" in data:
+                self._drivingCause = WMS_WebControl_pro_API_drivingCause(data["drivingCause"])
+            if "heartbeatError" in data:
+                self._heartbeatError = data["heartbeatError"]
+            if "blocking" in data:
+                self._blocking = data["blocking"]
+            for product in data["productData"]:
+                self._actions[product["actionId"]]._update(parameters=product["value"])
+        return refreshed
 
-            for product in detail["data"]["productData"]:
-                self._actions[product["actionId"]]._refresh(value=product["value"])
+    def action(self, actionDescription: WMS_WebControl_pro_API_actionDescription):
+        for action in self._actions.values():
+            if action.actionDescription == actionDescription:
+                return action
+        return None

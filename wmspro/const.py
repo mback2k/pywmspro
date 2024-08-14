@@ -57,6 +57,7 @@ class WMS_WebControl_pro_API_sceneActionType(IntEnum):
     Execute = 1
 
 class WMS_WebControl_pro_API_drivingCause(IntEnum):
+    _None = 0 # No driving cause
     Sun = 1
     DuskDawn = 2
     Wind = 3
