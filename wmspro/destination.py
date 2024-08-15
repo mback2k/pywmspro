@@ -1,4 +1,4 @@
-from .const import WMS_WebControl_pro_API_animationType, WMS_WebControl_pro_API_actionDescription, WMS_WebControl_pro_API_drivingCause
+from .const import WMS_WebControl_pro_API_animationType, WMS_WebControl_pro_API_actionType, WMS_WebControl_pro_API_actionDescription, WMS_WebControl_pro_API_drivingCause
 from .action import Action
 
 class Destination:
@@ -69,8 +69,8 @@ class Destination:
                 self._actions[product["actionId"]]._update_params(product["value"])
         return refreshed
 
-    def action(self, actionDescription: WMS_WebControl_pro_API_actionDescription):
+    def action(self, actionDescription: WMS_WebControl_pro_API_actionDescription, actionType: WMS_WebControl_pro_API_actionType = None) -> Action:
         for action in self._actions.values():
-            if action.actionDescription == actionDescription:
+            if action.actionDescription == actionDescription and (actionType is None or actionType == action.actionType):
                 return action
         return None

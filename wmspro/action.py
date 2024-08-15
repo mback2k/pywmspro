@@ -14,7 +14,7 @@ class Action:
         return self.actionDescription.name
 
     def __repr__(self):
-        return f'<Action {self.id}: {self}>'
+        return f'<Action {self.id}: {self} ({self.actionType.name})>'
 
     def __eq__(self, other):
         return self.id == other.id

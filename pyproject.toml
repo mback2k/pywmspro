@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pywmspro"
-version = "0.1.1"
+version = "0.1.2"
 description = ""
 authors = ["Marc Hoersken <info@marc-hoersken.de>"]
 readme = "README.md"
