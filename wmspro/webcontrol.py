@@ -64,7 +64,7 @@ async def async_main_test():
             print((dest.room, dest, dest.animationType))
             await dest.refresh()
             for action in dest.actions.values():
-                print((action, action.data))
+                print((action, action._attrs, action._params))
 
         action = control.dest("Licht").action(WMS_WebControl_pro_API_actionDescription.LightDimming)
         print(action)

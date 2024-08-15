@@ -66,7 +66,7 @@ class Destination:
             if "blocking" in data:
                 self._blocking = data["blocking"]
             for product in data["productData"]:
-                self._actions[product["actionId"]]._update(parameters=product["value"])
+                self._actions[product["actionId"]]._update_params(product["value"])
         return refreshed
 
     def action(self, actionDescription: WMS_WebControl_pro_API_actionDescription):

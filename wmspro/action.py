@@ -1,3 +1,4 @@
+from typing import Any
 from .const import WMS_WebControl_pro_API_actionType, WMS_WebControl_pro_API_actionDescription
 
 class Action:
@@ -6,7 +7,8 @@ class Action:
         self._id = id
         self._actionType = WMS_WebControl_pro_API_actionType(actionType)
         self._actionDescription = WMS_WebControl_pro_API_actionDescription(actionDescription)
-        self._data = kwargs
+        self._attrs = kwargs
+        self._params = {}
 
     def __str__(self):
         return self.actionDescription.name
@@ -32,12 +34,14 @@ class Action:
     def actionDescription(self):
         return self._actionDescription
 
-    @property
-    def data(self):
-        return self._data
+    def _update_params(self, value):
+        self._params.update(value)
 
-    def _update(self, **kwargs):
-        self._data.update(kwargs)
+    def __getattr__(self, name: str) -> Any:
+        return self._attrs.get(name)
+
+    def __getitem__(self, name: str) -> Any:
+        return self._params.get(name)
 
     async def __call__(self, **kwargs):
         return await self._dest._control._action(actions=[
