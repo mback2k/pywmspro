@@ -33,11 +33,14 @@ class WebControlPro:
     async def _getConfiguration(self) -> Any:
         return await self._commonCommand(WMS_WebControl_pro_API_command_getConfiguration)
 
-    async def _getStatus(self, destination_id: int) -> Any:
-        return await self._commonCommand(WMS_WebControl_pro_API_command_getStatus, destinations=[destination_id])
+    async def _getStatus(self, destinationId: int) -> Any:
+        return await self._commonCommand(WMS_WebControl_pro_API_command_getStatus, destinations=[destinationId])
 
     async def _action(self, actions: list, responseType=WMS_WebControl_pro_API_responseType.Instant) -> Any:
         return await self._commonCommand(WMS_WebControl_pro_API_command_action, responseType=responseType, actions=actions)
+
+    async def _sceneActions(self, sceneId: int, sceneActionType=WMS_WebControl_pro_API_sceneActionType.Execute, responseType=WMS_WebControl_pro_API_responseType.Instant) -> Any:
+        return await self._commonCommand(WMS_WebControl_pro_API_command_sceneActions, responseType=responseType, sceneId=sceneId, sceneActionType=sceneActionType)
 
     # --- Public methods ---
 
@@ -68,11 +71,18 @@ async def async_main_test():
         control = WebControlPro("webcontrol", session)
         pprint.pprint(await control.ping())
         await control.refresh()
+
         for dest in control.dests.values():
             print((dest.room, dest, dest.animationType))
             await dest.refresh()
             for action in dest.actions.values():
                 print((action, action._attrs, action._params))
+
+        for scene in control.scenes.values():
+            print(scene)
+            if scene.name == "Licht an":
+                response = await scene()
+                print(response)
 
         action = control.dest("Licht").action(WMS_WebControl_pro_API_actionDescription.LightDimming, WMS_WebControl_pro_API_actionType.Percentage)
         print(action)

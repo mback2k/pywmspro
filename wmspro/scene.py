@@ -1,3 +1,5 @@
+from typing import Any
+from .room import Room
 
 class Scene:
     def __init__(self, control, id: int, names: list):
@@ -28,3 +30,13 @@ class Scene:
     @property
     def name(self) -> str:
         return self._names[0]
+
+    @property
+    def room(self) -> Room:
+        for room in self._control.rooms.values():
+            if self._id in room._scene_ids:
+                return room
+        return None
+
+    async def __call__(self, **kwargs) -> Any:
+        return await self._control._sceneActions(self._id, **kwargs)

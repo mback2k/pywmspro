@@ -7,6 +7,7 @@ WMS_WebControl_pro_API_command_ping = "ping"
 WMS_WebControl_pro_API_command_getConfiguration = "getConfiguration"
 WMS_WebControl_pro_API_command_getStatus = "getStatus"
 WMS_WebControl_pro_API_command_action = "action"
+WMS_WebControl_pro_API_command_sceneActions = "sceneActions"
 
 class WMS_WebControl_pro_API_animationType(IntEnum):
     VenetianBlind = 0
