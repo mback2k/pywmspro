@@ -1,10 +1,9 @@
 from .const import WMS_WebControl_pro_API_animationType, WMS_WebControl_pro_API_actionType, WMS_WebControl_pro_API_actionDescription, WMS_WebControl_pro_API_drivingCause
 from .action import Action
 from .room import Room
-from .webcontrol import WebControlPro
 
 class Destination:
-    def __init__(self, control: WebControlPro, id: int, names: list, actions: list, animationType: int) -> None:
+    def __init__(self, control, id: int, names: list, actions: list, animationType: int) -> None:
         self._control = control
         self._id = id
         self._names = names

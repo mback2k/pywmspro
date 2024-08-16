@@ -1,7 +1,6 @@
-from .webcontrol import WebControlPro
 
 class Room:
-    def __init__(self, control: WebControlPro, id: int, name: str, destinations: list, scenes: list):
+    def __init__(self, control, id: int, name: str, destinations: list, scenes: list):
         self._control = control
         self._id = id
         self._name = name

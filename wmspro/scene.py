@@ -1,7 +1,6 @@
-from .webcontrol import WebControlPro
 
 class Scene:
-    def __init__(self, control: WebControlPro, id: int, names: list):
+    def __init__(self, control, id: int, names: list):
         self._control = control
         self._id = id
         self._names = names

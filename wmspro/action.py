@@ -1,9 +1,8 @@
 from typing import Any
 from .const import WMS_WebControl_pro_API_actionType, WMS_WebControl_pro_API_actionDescription
-from .destination import Destination
 
 class Action:
-    def __init__(self, dest: Destination, id: int, actionType: int, actionDescription: int, **kwargs) -> None:
+    def __init__(self, dest, id: int, actionType: int, actionDescription: int, **kwargs) -> None:
         self._dest = dest
         self._id = id
         self._actionType = WMS_WebControl_pro_API_actionType(actionType)
