@@ -54,7 +54,7 @@ class Destination:
 
     @property
     def available(self) -> bool:
-        return not (self._dest._heartbeatError or self._dest._blocking)
+        return not (self._heartbeatError or self._blocking)
 
     async def refresh(self) -> bool:
         status = await self._control._getStatus(self._id)
