@@ -20,6 +20,10 @@ class Room:
         return hash(self.id)
 
     @property
+    def host(self) -> str:
+        return self._control.host
+
+    @property
     def id(self) -> int:
         return self._id
 

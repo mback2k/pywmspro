@@ -8,8 +8,9 @@ from .const import *
 
 class WebControlPro:
     def __init__(self, host: str, session: ClientSession):
-        self.control = f"http://{host}/commonCommand"
-        self.session = session
+        self._host = host
+        self._control = f"http://{host}/commonCommand"
+        self._session = session
         self.dests = {}
         self.rooms = {}
         self.scenes = {}
@@ -23,7 +24,7 @@ class WebControlPro:
             "source": WMS_WebControl_pro_API_source,
         }
         data.update(kwargs)
-        async with self.session.post(url=self.control, json=data) as response:
+        async with self._session.post(url=self._control, json=data) as response:
             return await response.json()
 
     async def _ping(self) -> Any:
@@ -55,6 +56,12 @@ class WebControlPro:
             if dest.name == name:
                 return dest
         return None
+
+    # --- Properties ---
+
+    @property
+    def host(self) -> str:
+        return self._host
 
 async def async_main_test():
     async with ClientSession() as session:

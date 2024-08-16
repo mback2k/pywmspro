@@ -23,6 +23,10 @@ class Action:
         return hash(self.id)
 
     @property
+    def host(self) -> str:
+        return self._dest.host
+
+    @property
     def id(self) -> int:
         return self._id
 
