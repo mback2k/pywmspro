@@ -1,8 +1,9 @@
 from typing import Any
 from .const import WMS_WebControl_pro_API_actionType, WMS_WebControl_pro_API_actionDescription
+from .destination import Destination
 
 class Action:
-    def __init__(self, dest, id, actionType, actionDescription, **kwargs):
+    def __init__(self, dest: Destination, id: int, actionType: int, actionDescription: int, **kwargs) -> None:
         self._dest = dest
         self._id = id
         self._actionType = WMS_WebControl_pro_API_actionType(actionType)
@@ -10,31 +11,31 @@ class Action:
         self._attrs = kwargs
         self._params = {}
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.actionDescription.name
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'<Action {self.id}: {self} ({self.actionType.name})>'
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return self.id == other.id
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.id)
 
     @property
-    def id(self):
+    def id(self) -> int:
         return self._id
 
     @property
-    def actionType(self):
+    def actionType(self) -> WMS_WebControl_pro_API_actionType:
         return self._actionType
 
     @property
-    def actionDescription(self):
+    def actionDescription(self) -> WMS_WebControl_pro_API_actionDescription:
         return self._actionDescription
 
-    def _update_params(self, value):
+    def _update_params(self, value: dict) -> None:
         self._params.update(value)
 
     def __getattr__(self, name: str) -> Any:
@@ -43,7 +44,7 @@ class Action:
     def __getitem__(self, name: str) -> Any:
         return self._params.get(name)
 
-    async def __call__(self, **kwargs):
+    async def __call__(self, **kwargs) -> Any:
         return await self._dest._control._action(actions=[
             {"destinationId": self._dest.id,
              "actionId": self.id,

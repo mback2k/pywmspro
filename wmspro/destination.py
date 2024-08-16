@@ -1,8 +1,10 @@
 from .const import WMS_WebControl_pro_API_animationType, WMS_WebControl_pro_API_actionType, WMS_WebControl_pro_API_actionDescription, WMS_WebControl_pro_API_drivingCause
 from .action import Action
+from .room import Room
+from .webcontrol import WebControlPro
 
 class Destination:
-    def __init__(self, control, id, names, actions, animationType):
+    def __init__(self, control: WebControlPro, id: int, names: list, actions: list, animationType: int) -> None:
         self._control = control
         self._id = id
         self._names = names
@@ -12,36 +14,36 @@ class Destination:
         self._heartbeatError = None
         self._blocking = None
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'<Destination {self.id}: {self}>'
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return self.id == other.id
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.id)
 
     @property
-    def id(self):
+    def id(self) -> int:
         return self._id
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self._names[0]
 
     @property
-    def actions(self):
+    def actions(self) -> dict:
         return self._actions
 
     @property
-    def animationType(self):
+    def animationType(self) -> WMS_WebControl_pro_API_animationType:
         return self._animationType
 
     @property
-    def room(self):
+    def room(self) -> Room:
         for room in self._control.rooms.values():
             if self._id in room._destination_ids:
                 return room

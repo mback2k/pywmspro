@@ -1,5 +1,6 @@
 import asyncio, pprint
 from aiohttp import ClientSession
+from typing import Any
 from .destination import Destination
 from .room import Room
 from .scene import Scene
@@ -15,26 +16,26 @@ class WebControlPro:
 
     # --- Private methods ---
 
-    async def _commonCommand(self, command: str, **kwargs):
+    async def _commonCommand(self, command: str, **kwargs) -> Any:
         data = {
-            "protocolVersion": WMS_WebControl_pro_API_protocolVersion, 
-            "command": command, 
+            "protocolVersion": WMS_WebControl_pro_API_protocolVersion,
+            "command": command,
             "source": WMS_WebControl_pro_API_source,
         }
         data.update(kwargs)
         async with self.session.post(url=self.control, json=data) as response:
             return await response.json()
 
-    async def _ping(self):
+    async def _ping(self) -> Any:
         return await self._commonCommand(WMS_WebControl_pro_API_command_ping)
 
-    async def _getConfiguration(self):
+    async def _getConfiguration(self) -> Any:
         return await self._commonCommand(WMS_WebControl_pro_API_command_getConfiguration)
 
-    async def _getStatus(self, destination_id: int):
+    async def _getStatus(self, destination_id: int) -> Any:
         return await self._commonCommand(WMS_WebControl_pro_API_command_getStatus, destinations=[destination_id])
 
-    async def _action(self, actions: list, responseType=WMS_WebControl_pro_API_responseType.Instant):
+    async def _action(self, actions: list, responseType=WMS_WebControl_pro_API_responseType.Instant) -> Any:
         return await self._commonCommand(WMS_WebControl_pro_API_command_action, responseType=responseType, actions=actions)
 
     # --- Public methods ---
@@ -43,7 +44,7 @@ class WebControlPro:
         ping = await self._ping()
         return ping["status"] == 0
 
-    async def refresh(self):
+    async def refresh(self) -> None:
         config = await self._getConfiguration()
         self.dests = {dest["id"]: Destination(self, **dest) for dest in config["destinations"]}
         self.rooms = {room["id"]: Room(self, **room) for room in config["rooms"]}
