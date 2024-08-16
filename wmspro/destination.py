@@ -49,6 +49,10 @@ class Destination:
                 return room
         return None
 
+    @property
+    def available(self) -> bool:
+        return not (self._dest._heartbeatError or self._dest._blocking)
+
     async def refresh(self) -> bool:
         status = await self._control._getStatus(self._id)
         if not "details" in status:
