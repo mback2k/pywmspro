@@ -1,9 +1,12 @@
 [tool.poetry]
 name = "pywmspro"
-version = "0.1.5"
-description = ""
+version = "0.1.0"
+description = "Python library for WMS WebControl pro API"
+license = "Apache-2.0"
 authors = ["Marc Hoersken <info@marc-hoersken.de>"]
 readme = "README.md"
+repository = "https://github.com/mback2k/pywmspro"
+keywords = ["warema", "wms", "webcontrol"]
 packages = [
     { include = "wmspro" },
 ]
@@ -11,7 +14,6 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.8"
 aiohttp = "^3.10.3"
-
 
 [build-system]
 requires = ["poetry-core"]
