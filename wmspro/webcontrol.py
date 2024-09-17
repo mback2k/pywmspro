@@ -1,5 +1,6 @@
 import asyncio, pprint
 from aiohttp import ClientSession
+from types import MappingProxyType
 from typing import Any
 from .destination import Destination
 from .room import Room
@@ -11,9 +12,9 @@ class WebControlPro:
         self._host = host
         self._control = f"http://{host}/commonCommand"
         self._session = session
-        self.dests = {}
-        self.rooms = {}
-        self.scenes = {}
+        self._dests = {}
+        self._rooms = {}
+        self._scenes = {}
 
     # --- Private methods ---
 
@@ -50,12 +51,12 @@ class WebControlPro:
 
     async def refresh(self) -> None:
         config = await self._getConfiguration()
-        self.dests = {dest["id"]: Destination(self, **dest) for dest in config["destinations"]}
-        self.rooms = {room["id"]: Room(self, **room) for room in config["rooms"]}
-        self.scenes = {scene["id"]: Scene(self, **scene) for scene in config["scenes"]}
+        self._dests = {dest["id"]: Destination(self, **dest) for dest in config["destinations"]}
+        self._rooms = {room["id"]: Room(self, **room) for room in config["rooms"]}
+        self._scenes = {scene["id"]: Scene(self, **scene) for scene in config["scenes"]}
 
     def dest(self, name: str) -> Destination:
-        for dest in self.dests.values():
+        for dest in self._dests.values():
             if dest.name == name:
                 return dest
         return None
@@ -65,6 +66,19 @@ class WebControlPro:
     @property
     def host(self) -> str:
         return self._host
+
+    @property
+    def dests(self) -> dict:
+        return MappingProxyType(self._dests)
+
+    @property
+    def rooms(self) -> dict:
+        return MappingProxyType(self._rooms)
+
+    @property
+    def scenes(self) -> dict:
+        return MappingProxyType(self._scenes)
+
 
 async def async_main_test():
     async with ClientSession() as session:
