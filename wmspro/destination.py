@@ -48,6 +48,10 @@ class Destination:
         return self._animationType
 
     @property
+    def drivingCause(self) -> WMS_WebControl_pro_API_drivingCause:
+        return self._drivingCause
+
+    @property
     def room(self) -> Room:
         for room in self._control.rooms.values():
             if self._id in room._destination_ids:
