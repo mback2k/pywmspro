@@ -25,6 +25,8 @@ class Destination:
     def __hash__(self) -> int:
         return hash(self.id)
 
+    # --- Properties ---
+
     @property
     def host(self) -> str:
         return self._control.host
@@ -55,6 +57,8 @@ class Destination:
     @property
     def available(self) -> bool:
         return not (self._heartbeatError or self._blocking)
+
+    # --- Public methods ---
 
     async def refresh(self) -> bool:
         status = await self._control._getStatus(self._id)

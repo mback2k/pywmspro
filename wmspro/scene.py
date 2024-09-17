@@ -19,6 +19,8 @@ class Scene:
     def __hash__(self) -> int:
         return hash(self.id)
 
+    # --- Properties ---
+
     @property
     def host(self) -> str:
         return self._control.host
@@ -37,6 +39,8 @@ class Scene:
             if self._id in room._scene_ids:
                 return room
         return None
+
+    # --- Public methods ---
 
     async def __call__(self, **kwargs) -> Any:
         return await self._control._sceneActions(self._id, **kwargs)

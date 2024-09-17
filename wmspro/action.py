@@ -22,6 +22,8 @@ class Action:
     def __hash__(self) -> int:
         return hash(self.id)
 
+    # --- Properties ---
+
     @property
     def host(self) -> str:
         return self._dest.host
@@ -38,8 +40,12 @@ class Action:
     def actionDescription(self) -> WMS_WebControl_pro_API_actionDescription:
         return self._actionDescription
 
+    # --- Private methods ---
+
     def _update_params(self, value: dict) -> None:
         self._params.update(value)
+
+    # --- Public methods ---
 
     def __getattr__(self, name: str) -> Any:
         return self._attrs.get(name)

@@ -19,6 +19,8 @@ class Room:
     def __hash__(self) -> int:
         return hash(self.id)
 
+    # --- Properties ---
+
     @property
     def host(self) -> str:
         return self._control.host
