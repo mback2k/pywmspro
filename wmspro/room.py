@@ -40,3 +40,13 @@ class Room:
     @property
     def scenes(self) -> dict:
         return {scene_id: self._control.scenes[scene_id] for scene_id in self._scene_ids}
+
+    # --- Public methods ---
+
+    def diag(self) -> dict:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "destinations": {dest.id: dest.name for dest in self.destinations.values()},
+            "scenes": {scene.id: scene.name for scene in self.scenes.values()},
+        }

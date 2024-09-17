@@ -98,3 +98,17 @@ class Destination:
             if action.actionDescription == actionDescription and (actionType is None or actionType == action.actionType):
                 return action
         return None
+
+    def diag(self) -> dict:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "room": {self.room.id: self.room.name},
+            "actions": {k: v.diag() for k, v in self._actions.items()},
+            "animationType": self.animationType.name,
+            "drivingCause": self.drivingCause.name,
+            "available": self.available,
+            "heartbeatError": self._heartbeatError,
+            "blocking": self._blocking,
+            "status": self._status,
+        }

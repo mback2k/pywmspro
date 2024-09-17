@@ -63,6 +63,15 @@ class WebControlPro:
                 return dest
         return None
 
+    def diag(self) -> dict:
+        return {
+            "host": self._host,
+            "config": self._config,
+            "dests": {k: v.diag() for k, v in self._dests.items()},
+            "rooms": {k: v.diag() for k, v in self._rooms.items()},
+            "scenes": {k: v.diag() for k, v in self._scenes.items()},
+        }
+
     # --- Properties ---
 
     @property
@@ -108,6 +117,9 @@ async def async_main_test():
         print(action)
         response = await action(percentage=100)
         print(response)
+
+        pprint.pprint(control.diag())
+
 
 if __name__ == "__main__":
     loop = asyncio.new_event_loop()

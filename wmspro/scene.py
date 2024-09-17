@@ -44,3 +44,10 @@ class Scene:
 
     async def __call__(self, **kwargs) -> Any:
         return await self._control._sceneActions(self._id, **kwargs)
+
+    def diag(self) -> dict:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "room": {self.room.id: self.room.name},
+        }

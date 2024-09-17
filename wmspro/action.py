@@ -59,3 +59,12 @@ class Action:
              "actionId": self.id,
              "parameters": kwargs}
         ])
+
+    def diag(self) -> dict:
+        return {
+            "id": self.id,
+            "actionType": self.actionType.name,
+            "actionDescription": self.actionDescription.name,
+            "attrs": self._attrs,
+            "params": self._params,
+       }
