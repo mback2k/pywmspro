@@ -1,3 +1,4 @@
+from types import MappingProxyType
 from .const import WMS_WebControl_pro_API_animationType, WMS_WebControl_pro_API_actionType, WMS_WebControl_pro_API_actionDescription, WMS_WebControl_pro_API_drivingCause
 from .action import Action
 from .room import Room
@@ -12,6 +13,7 @@ class Destination:
         self._drivingCause = WMS_WebControl_pro_API_drivingCause.Unknown
         self._heartbeatError = None
         self._blocking = None
+        self._status = {}
 
     def __str__(self) -> str:
         return self.name
@@ -62,10 +64,15 @@ class Destination:
     def available(self) -> bool:
         return not (self._heartbeatError or self._blocking)
 
+    @property
+    def status(self) -> dict:
+        return MappingProxyType(self._status)
+
     # --- Public methods ---
 
     async def refresh(self) -> bool:
         status = await self._control._getStatus(self._id)
+        self._status = status
         if not "details" in status:
             return False
         refreshed = False

@@ -12,6 +12,7 @@ class WebControlPro:
         self._host = host
         self._control = f"http://{host}/commonCommand"
         self._session = session
+        self._config = {}
         self._dests = {}
         self._rooms = {}
         self._scenes = {}
@@ -51,6 +52,7 @@ class WebControlPro:
 
     async def refresh(self) -> None:
         config = await self._getConfiguration()
+        self._config = config
         self._dests = {dest["id"]: Destination(self, **dest) for dest in config["destinations"]}
         self._rooms = {room["id"]: Room(self, **room) for room in config["rooms"]}
         self._scenes = {scene["id"]: Scene(self, **scene) for scene in config["scenes"]}
@@ -66,6 +68,10 @@ class WebControlPro:
     @property
     def host(self) -> str:
         return self._host
+
+    @property
+    def config(self) -> dict:
+        return MappingProxyType(self._config)
 
     @property
     def dests(self) -> dict:
