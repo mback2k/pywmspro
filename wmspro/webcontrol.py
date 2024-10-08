@@ -115,7 +115,7 @@ async def async_main_test():
 
         action = control.dest("Licht").action(WMS_WebControl_pro_API_actionDescription.LightDimming, WMS_WebControl_pro_API_actionType.Percentage)
         print(action)
-        response = await action(percentage=100)
+        response = await action(percentage=0)
         print(response)
 
         pprint.pprint(control.diag())
