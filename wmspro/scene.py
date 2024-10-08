@@ -1,6 +1,7 @@
 from typing import Any
 from .room import Room
 
+
 class Scene:
     def __init__(self, control, id: int, names: list):
         self._control = control
@@ -11,7 +12,7 @@ class Scene:
         return self.name
 
     def __repr__(self) -> str:
-        return f'<Scene {self.id}: {self}>'
+        return f"<Scene {self.id}: {self}>"
 
     def __eq__(self, other) -> bool:
         return self.id == other.id

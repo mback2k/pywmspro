@@ -1,12 +1,20 @@
 from typing import Any
-from .const import WMS_WebControl_pro_API_actionType, WMS_WebControl_pro_API_actionDescription
+from .const import (
+    WMS_WebControl_pro_API_actionType,
+    WMS_WebControl_pro_API_actionDescription,
+)
+
 
 class Action:
-    def __init__(self, dest, id: int, actionType: int, actionDescription: int, **kwargs) -> None:
+    def __init__(
+        self, dest, id: int, actionType: int, actionDescription: int, **kwargs
+    ) -> None:
         self._dest = dest
         self._id = id
         self._actionType = WMS_WebControl_pro_API_actionType(actionType)
-        self._actionDescription = WMS_WebControl_pro_API_actionDescription(actionDescription)
+        self._actionDescription = WMS_WebControl_pro_API_actionDescription(
+            actionDescription
+        )
         self._attrs = kwargs
         self._params = {}
 
@@ -14,7 +22,7 @@ class Action:
         return self.actionDescription.name
 
     def __repr__(self) -> str:
-        return f'<Action {self.id}: {self} ({self.actionType.name})>'
+        return f"<Action {self.id}: {self} ({self.actionType.name})>"
 
     def __eq__(self, other) -> bool:
         return self.id == other.id
@@ -54,11 +62,15 @@ class Action:
         return self._params.get(name)
 
     async def __call__(self, **kwargs) -> Any:
-        return await self._dest._control._action(actions=[
-            {"destinationId": self._dest.id,
-             "actionId": self.id,
-             "parameters": kwargs}
-        ])
+        return await self._dest._control._action(
+            actions=[
+                {
+                    "destinationId": self._dest.id,
+                    "actionId": self.id,
+                    "parameters": kwargs,
+                }
+            ]
+        )
 
     def diag(self) -> dict:
         return {
@@ -67,4 +79,4 @@ class Action:
             "actionDescription": self.actionDescription.name,
             "attrs": self._attrs,
             "params": self._params,
-       }
+        }

@@ -1,10 +1,18 @@
 from types import MappingProxyType
-from .const import WMS_WebControl_pro_API_animationType, WMS_WebControl_pro_API_actionType, WMS_WebControl_pro_API_actionDescription, WMS_WebControl_pro_API_drivingCause
+from .const import (
+    WMS_WebControl_pro_API_animationType,
+    WMS_WebControl_pro_API_actionType,
+    WMS_WebControl_pro_API_actionDescription,
+    WMS_WebControl_pro_API_drivingCause,
+)
 from .action import Action
 from .room import Room
 
+
 class Destination:
-    def __init__(self, control, id: int, names: list, actions: list, animationType: int) -> None:
+    def __init__(
+        self, control, id: int, names: list, actions: list, animationType: int
+    ) -> None:
         self._control = control
         self._id = id
         self._names = names
@@ -20,7 +28,7 @@ class Destination:
         return self.name
 
     def __repr__(self) -> str:
-        return f'<Destination {self.id}: {self}>'
+        return f"<Destination {self.id}: {self}>"
 
     def __eq__(self, other) -> bool:
         return self.id == other.id
@@ -85,7 +93,9 @@ class Destination:
             refreshed = True
             data = detail["data"]
             if "drivingCause" in data:
-                self._drivingCause = WMS_WebControl_pro_API_drivingCause(data["drivingCause"])
+                self._drivingCause = WMS_WebControl_pro_API_drivingCause(
+                    data["drivingCause"]
+                )
             if "heartbeatError" in data:
                 self._heartbeatError = data["heartbeatError"]
             if "blocking" in data:
@@ -98,9 +108,15 @@ class Destination:
                     self._unknownProducts[actionId] = product
         return refreshed
 
-    def action(self, actionDescription: WMS_WebControl_pro_API_actionDescription, actionType: WMS_WebControl_pro_API_actionType = None) -> Action:
+    def action(
+        self,
+        actionDescription: WMS_WebControl_pro_API_actionDescription,
+        actionType: WMS_WebControl_pro_API_actionType = None,
+    ) -> Action:
         for action in self._actions.values():
-            if action.actionDescription == actionDescription and (actionType is None or actionType == action.actionType):
+            if action.actionDescription == actionDescription and (
+                actionType is None or actionType == action.actionType
+            ):
                 return action
         return None
 

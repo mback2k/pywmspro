@@ -9,6 +9,7 @@ WMS_WebControl_pro_API_command_getStatus = "getStatus"
 WMS_WebControl_pro_API_command_action = "action"
 WMS_WebControl_pro_API_command_sceneActions = "sceneActions"
 
+
 class WMS_WebControl_pro_API_animationType(IntEnum):
     VenetianBlind = 0
     Awning = 1
@@ -18,6 +19,7 @@ class WMS_WebControl_pro_API_animationType(IntEnum):
     Switch = 5
     Dimmer = 6
     Unknown = 999
+
 
 class WMS_WebControl_pro_API_actionType(IntEnum):
     Percentage = 0
@@ -31,6 +33,7 @@ class WMS_WebControl_pro_API_actionType(IntEnum):
     Identify = 8
     Enumeration = 9
     Unknown = 999
+
 
 class WMS_WebControl_pro_API_actionDescription(IntEnum):
     AwningDrive = 0
@@ -49,16 +52,19 @@ class WMS_WebControl_pro_API_actionDescription(IntEnum):
     Identify = 13
     Unknown = 999
 
+
 class WMS_WebControl_pro_API_responseType(IntEnum):
     Instant = 0
     Detailed = 1
+
 
 class WMS_WebControl_pro_API_sceneActionType(IntEnum):
     Relearn = 0
     Execute = 1
 
+
 class WMS_WebControl_pro_API_drivingCause(IntEnum):
-    _None = 0 # No driving cause
+    _None = 0  # No driving cause
     Sun = 1
     DuskDawn = 2
     Wind = 3

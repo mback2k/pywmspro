@@ -20,6 +20,7 @@ from .const import (
     WMS_WebControl_pro_API_actionType,
 )
 
+
 class WebControlPro:
     def __init__(self, host: str, session: ClientSession):
         self._host = host
@@ -46,16 +47,36 @@ class WebControlPro:
         return await self._commonCommand(WMS_WebControl_pro_API_command_ping)
 
     async def _getConfiguration(self) -> Any:
-        return await self._commonCommand(WMS_WebControl_pro_API_command_getConfiguration)
+        return await self._commonCommand(
+            WMS_WebControl_pro_API_command_getConfiguration
+        )
 
     async def _getStatus(self, destinationId: int) -> Any:
-        return await self._commonCommand(WMS_WebControl_pro_API_command_getStatus, destinations=[destinationId])
+        return await self._commonCommand(
+            WMS_WebControl_pro_API_command_getStatus, destinations=[destinationId]
+        )
 
-    async def _action(self, actions: list, responseType=WMS_WebControl_pro_API_responseType.Instant) -> Any:
-        return await self._commonCommand(WMS_WebControl_pro_API_command_action, responseType=responseType, actions=actions)
+    async def _action(
+        self, actions: list, responseType=WMS_WebControl_pro_API_responseType.Instant
+    ) -> Any:
+        return await self._commonCommand(
+            WMS_WebControl_pro_API_command_action,
+            responseType=responseType,
+            actions=actions,
+        )
 
-    async def _sceneActions(self, sceneId: int, sceneActionType=WMS_WebControl_pro_API_sceneActionType.Execute, responseType=WMS_WebControl_pro_API_responseType.Instant) -> Any:
-        return await self._commonCommand(WMS_WebControl_pro_API_command_sceneActions, responseType=responseType, sceneId=sceneId, sceneActionType=sceneActionType)
+    async def _sceneActions(
+        self,
+        sceneId: int,
+        sceneActionType=WMS_WebControl_pro_API_sceneActionType.Execute,
+        responseType=WMS_WebControl_pro_API_responseType.Instant,
+    ) -> Any:
+        return await self._commonCommand(
+            WMS_WebControl_pro_API_command_sceneActions,
+            responseType=responseType,
+            sceneId=sceneId,
+            sceneActionType=sceneActionType,
+        )
 
     # --- Public methods ---
 
@@ -66,7 +87,9 @@ class WebControlPro:
     async def refresh(self) -> None:
         config = await self._getConfiguration()
         self._config = config
-        self._dests = {dest["id"]: Destination(self, **dest) for dest in config["destinations"]}
+        self._dests = {
+            dest["id"]: Destination(self, **dest) for dest in config["destinations"]
+        }
         self._rooms = {room["id"]: Room(self, **room) for room in config["rooms"]}
         self._scenes = {scene["id"]: Scene(self, **scene) for scene in config["scenes"]}
 
@@ -126,7 +149,10 @@ async def async_main_test():
                 response = await scene()
                 print(response)
 
-        action = control.dest("Licht").action(WMS_WebControl_pro_API_actionDescription.LightDimming, WMS_WebControl_pro_API_actionType.Percentage)
+        action = control.dest("Licht").action(
+            WMS_WebControl_pro_API_actionDescription.LightDimming,
+            WMS_WebControl_pro_API_actionType.Percentage,
+        )
         print(action)
         response = await action(percentage=0)
         print(response)

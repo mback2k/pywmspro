@@ -1,4 +1,3 @@
-
 class Room:
     def __init__(self, control, id: int, name: str, destinations: list, scenes: list):
         self._control = control
@@ -11,7 +10,7 @@ class Room:
         return self.name
 
     def __repr__(self) -> str:
-        return f'<Room {self.id}: {self}>'
+        return f"<Room {self.id}: {self}>"
 
     def __eq__(self, other) -> bool:
         return self.id == other.id
@@ -35,11 +34,15 @@ class Room:
 
     @property
     def destinations(self) -> dict:
-        return {dest_id: self._control.dests[dest_id] for dest_id in self._destination_ids}
+        return {
+            dest_id: self._control.dests[dest_id] for dest_id in self._destination_ids
+        }
 
     @property
     def scenes(self) -> dict:
-        return {scene_id: self._control.scenes[scene_id] for scene_id in self._scene_ids}
+        return {
+            scene_id: self._control.scenes[scene_id] for scene_id in self._scene_ids
+        }
 
     # --- Public methods ---
 
