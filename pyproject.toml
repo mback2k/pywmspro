@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pywmspro"
-version = "0.2.0"
+version = "0.2.1"
 description = "Python library for WMS WebControl pro API"
 license = "Apache-2.0"
 authors = ["Marc Hoersken <info@marc-hoersken.de>"]
