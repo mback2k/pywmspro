@@ -74,13 +74,13 @@ class Destination:
     async def refresh(self) -> bool:
         status = await self._control._getStatus(self._id)
         self._status = status
-        if not "details" in status:
+        if "details" not in status:
             return False
         refreshed = False
         for detail in status["details"]:
             if detail["destinationId"] != self._id:
                 continue
-            if not "data" in detail:
+            if "data" not in detail:
                 continue
             refreshed = True
             data = detail["data"]
@@ -90,9 +90,9 @@ class Destination:
                 self._heartbeatError = data["heartbeatError"]
             if "blocking" in data:
                 self._blocking = data["blocking"]
-            for product in data["productData"] and "value" in product:
+            for product in data["productData"]:
                 actionId = product["actionId"]
-                if actionId in self._actions:
+                if actionId in self._actions and "value" in product:
                     self._actions[actionId]._update_params(product["value"])
                 else:
                     self._unknownProducts[actionId] = product
