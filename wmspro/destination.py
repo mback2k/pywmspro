@@ -11,6 +11,7 @@ class Destination:
         self._actions = {action["id"]: Action(self, **action) for action in actions}
         self._animationType = WMS_WebControl_pro_API_animationType(animationType)
         self._drivingCause = WMS_WebControl_pro_API_drivingCause.Unknown
+        self._unknownProducts = {}
         self._heartbeatError = None
         self._blocking = None
         self._status = {}
@@ -89,8 +90,12 @@ class Destination:
                 self._heartbeatError = data["heartbeatError"]
             if "blocking" in data:
                 self._blocking = data["blocking"]
-            for product in data["productData"]:
-                self._actions[product["actionId"]]._update_params(product["value"])
+            for product in data["productData"] and "value" in product:
+                actionId = product["actionId"]
+                if actionId in self._actions:
+                    self._actions[actionId]._update_params(product["value"])
+                else:
+                    self._unknownProducts[actionId] = product
         return refreshed
 
     def action(self, actionDescription: WMS_WebControl_pro_API_actionDescription, actionType: WMS_WebControl_pro_API_actionType = None) -> Action:
@@ -108,6 +113,7 @@ class Destination:
             "animationType": self.animationType.name,
             "drivingCause": self.drivingCause.name,
             "available": self.available,
+            "unknownProducts": self._unknownProducts,
             "heartbeatError": self._heartbeatError,
             "blocking": self._blocking,
             "status": self._status,
