@@ -7,6 +7,9 @@ from .const import (
 )
 from .action import Action
 from .room import Room
+import logging
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class Destination:
@@ -82,9 +85,11 @@ class Destination:
     async def refresh(self) -> bool:
         status = await self._control._getStatus(self._id)
         if not status:
+            _LOGGER.warning("Failed to get status for %s (%s)", self, self._id)
             return False
         self._status = status
         if "details" not in status:
+            _LOGGER.warning("No details in status for %s (%s)", self, self._id)
             return False
         refreshed = False
         for detail in status["details"]:
@@ -107,6 +112,12 @@ class Destination:
                 if actionId in self._actions and "value" in product:
                     self._actions[actionId]._update_params(product["value"])
                 else:
+                    _LOGGER.warning(
+                        "Unknown actionId %s in productData for %s (%s)",
+                        actionId,
+                        self,
+                        self._id,
+                    )
                     self._unknownProducts[actionId] = product
         return refreshed
 
@@ -120,6 +131,13 @@ class Destination:
                 actionType is None or actionType == action.actionType
             ):
                 return action
+        _LOGGER.warning(
+            "Failed to get action with description %s and type %s in %s (%s)",
+            actionDescription,
+            actionType,
+            self,
+            self._id,
+        )
         return None
 
     def diag(self) -> dict:
