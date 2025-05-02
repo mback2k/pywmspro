@@ -81,6 +81,8 @@ class Destination:
 
     async def refresh(self) -> bool:
         status = await self._control._getStatus(self._id)
+        if not status:
+            return False
         self._status = status
         if "details" not in status:
             return False
