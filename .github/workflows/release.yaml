@@ -28,6 +28,7 @@ jobs:
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
+          skip-existing: true
           print-hash: true
   prod-pypi:
     if: github.ref_type == 'tag'
