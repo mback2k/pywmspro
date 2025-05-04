@@ -1,6 +1,6 @@
 [project]
 name = "pywmspro"
-version = "0.2.2"
+dynamic = ["version"]
 description = "Python library for WMS WebControl pro API"
 license = "Apache-2.0"
 authors = [
@@ -17,8 +17,11 @@ dependencies = [
 [tool.hatch.build.targets.wheel]
 packages = ["wmspro"]
 
+[tool.hatch.version]
+source = "vcs"
+
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [dependency-groups]
