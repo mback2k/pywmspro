@@ -71,4 +71,6 @@ jobs:
           --verify-tag
           --prerelease
           --draft
+        env:
+          GH_TOKEN: "${{ github.token }}"
 ...
