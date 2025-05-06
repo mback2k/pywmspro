@@ -32,27 +32,10 @@ jobs:
           repository-url: https://test.pypi.org/legacy/
           skip-existing: true
           print-hash: true
-  prod-pypi:
-    if: github.ref_type == 'tag'
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: prod-pypi
-      url: https://pypi.org/p/pywmspro
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: Packages
-          path: dist
-      - uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          print-hash: true
   github-release:
     if: github.ref_type == 'tag'
     runs-on: ubuntu-latest
-    needs: build
+    needs: test-pypi
     permissions:
       contents: write
       id-token: write
@@ -76,4 +59,21 @@ jobs:
           --draft
         env:
           GH_TOKEN: "${{ github.token }}"
+  prod-pypi:
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    needs: github-release
+    environment:
+      name: prod-pypi
+      url: https://pypi.org/p/pywmspro
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: Packages
+          path: dist
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          print-hash: true
 ...
