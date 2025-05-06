@@ -1,5 +1,5 @@
 ---
-name: PyPI
+name: Release
 on: [ push ]
 jobs:
   build:
