@@ -68,7 +68,7 @@ jobs:
         with:
           inputs: dist/*
       - run: >
-          gh release create "${{ github.ref }}" dist/*
+          gh release create "${{ github.ref_name }}" dist/*
           --target "${{ github.sha }}"
           --generate-notes
           --verify-tag
