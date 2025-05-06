@@ -20,6 +20,10 @@ packages = ["wmspro"]
 [tool.hatch.version]
 source = "vcs"
 
+[tool.hatch.version.raw-options]
+git_describe_command = ["git", "describe", "--tags"]
+local_scheme = "no-local-version"
+
 [build-system]
 requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
