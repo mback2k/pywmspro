@@ -2,6 +2,7 @@ from typing import Any
 from .const import (
     WMS_WebControl_pro_API_actionType,
     WMS_WebControl_pro_API_actionDescription,
+    WMS_WebControl_pro_API_responseType,
 )
 
 
@@ -61,7 +62,7 @@ class Action:
     def __getitem__(self, name: str) -> Any:
         return self._params.get(name)
 
-    async def __call__(self, **kwargs) -> Any:
+    async def __call__(self, responseType=WMS_WebControl_pro_API_responseType.Instant, **kwargs) -> Any:
         return await self._dest._control._action(
             actions=[
                 {
@@ -69,7 +70,8 @@ class Action:
                     "actionId": self.id,
                     "parameters": kwargs,
                 }
-            ]
+            ],
+            responseType=responseType,
         )
 
     def diag(self) -> dict:
