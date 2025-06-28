@@ -1,3 +1,4 @@
 .DS_Store
+simulator/diagnostics/
 dist/
 *.pyc
