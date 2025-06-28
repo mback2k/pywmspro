@@ -62,7 +62,9 @@ class Action:
     def __getitem__(self, name: str) -> Any:
         return self._params.get(name)
 
-    async def __call__(self, responseType=WMS_WebControl_pro_API_responseType.Instant, **kwargs) -> Any:
+    async def __call__(
+        self, responseType=WMS_WebControl_pro_API_responseType.Instant, **kwargs
+    ) -> Any:
         return await self._dest._control._action(
             actions=[
                 {
