@@ -125,19 +125,21 @@ class Destination:
         self,
         actionDescription: WMS_WebControl_pro_API_actionDescription,
         actionType: WMS_WebControl_pro_API_actionType = None,
+        warnMissing=True,
     ) -> Action:
         for action in self._actions.values():
             if action.actionDescription == actionDescription and (
                 actionType is None or actionType == action.actionType
             ):
                 return action
-        _LOGGER.warning(
-            "Failed to get action with description %s and type %s in %s (%s)",
-            actionDescription,
-            actionType,
-            self,
-            self._id,
-        )
+        if warnMissing:
+            _LOGGER.warning(
+                "Failed to get action with description %s and type %s in %s (%s)",
+                actionDescription.name,
+                actionType.name if actionType else None,
+                self,
+                self._id,
+            )
         return None
 
     def diag(self) -> dict:
