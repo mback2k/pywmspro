@@ -121,26 +121,37 @@ class Destination:
                     self._unknownProducts[actionId] = product
         return refreshed
 
+    def hasAction(
+        self,
+        actionDescription: WMS_WebControl_pro_API_actionDescription,
+        actionType: WMS_WebControl_pro_API_actionType = None,
+    ) -> bool:
+        for action in self._actions.values():
+            if action.actionDescription == actionDescription and (
+                actionType is None or actionType == action.actionType
+            ):
+                return True
+        return False
+
     def action(
         self,
         actionDescription: WMS_WebControl_pro_API_actionDescription,
         actionType: WMS_WebControl_pro_API_actionType = None,
-        warnMissing=True,
     ) -> Action:
         for action in self._actions.values():
             if action.actionDescription == actionDescription and (
                 actionType is None or actionType == action.actionType
             ):
                 return action
-        if warnMissing:
-            _LOGGER.warning(
-                "Failed to get action with description %s and type %s in %s (%s)",
-                actionDescription.name,
-                actionType.name if actionType else None,
+        raise NotImplementedError(
+            "Failed to find action with description %s and type %s in %s (%s)"
+            % (
+                actionDescription.name if actionDescription else "*",
+                actionType.name if actionType else "*",
                 self,
                 self._id,
             )
-        return None
+        )
 
     def diag(self) -> dict:
         return {
