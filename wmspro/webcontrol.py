@@ -159,6 +159,14 @@ async def async_main_test():
         )
         print(response)
 
+        action_list = action.prep(percentage=100)
+        action_list += action.prep(percentage=0)
+        print(action_list)
+        response = await action_list(
+            responseType=WMS_WebControl_pro_API_responseType.Detailed
+        )
+        print(response)
+
         pprint.pprint(control.diag())
 
 

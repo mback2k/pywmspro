@@ -6,6 +6,22 @@ from .const import (
 )
 
 
+class ActionList(list):
+    def __init__(self, control) -> None:
+        super().__init__()
+        self._control = control
+
+    async def __call__(
+        self, responseType=WMS_WebControl_pro_API_responseType.Instant
+    ) -> Any:
+        if len(self) == 0:
+            raise ValueError("ActionList is empty")
+        return await self._control._action(
+            actions=self,
+            responseType=responseType,
+        )
+
+
 class Action:
     def __init__(
         self, dest, id: int, actionType: int, actionDescription: int, **kwargs
@@ -62,17 +78,20 @@ class Action:
     def __getitem__(self, name: str) -> Any:
         return self._params.get(name)
 
+    def prep(self, **kwargs) -> ActionList:
+        actionList = ActionList(self._dest._control)
+        actionList.append({
+            "destinationId": self._dest.id,
+            "actionId": self.id,
+            "parameters": kwargs,
+        })
+        return actionList
+
     async def __call__(
         self, responseType=WMS_WebControl_pro_API_responseType.Instant, **kwargs
     ) -> Any:
         return await self._dest._control._action(
-            actions=[
-                {
-                    "destinationId": self._dest.id,
-                    "actionId": self.id,
-                    "parameters": kwargs,
-                }
-            ],
+            actions=self.prep(**kwargs),
             responseType=responseType,
         )
 
