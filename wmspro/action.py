@@ -34,6 +34,7 @@ class Action:
         )
         self._attrs = kwargs
         self._params = {}
+        self._overwrites = {}
 
     def __str__(self) -> str:
         return self.actionDescription.name
@@ -73,10 +74,24 @@ class Action:
     # --- Public methods ---
 
     def __getattr__(self, name: str) -> Any:
+        if name in self._overwrites:
+            return self._overwrites[name]
+        if name.startswith("wms__"):
+            name = name[5:]
         return self._attrs.get(name)
 
     def __getitem__(self, name: str) -> Any:
         return self._params.get(name)
+
+    def __setitem__(self, name: str, value: Any) -> None:
+        if name in self._attrs:
+            self._overwrites[name] = value
+        elif name in self._params:
+            self._params[name] = value
+
+    def __delitem__(self, name: str) -> None:
+        if name in self._overwrites:
+            del self._overwrites[name]
 
     def prep(self, **kwargs) -> ActionList:
         actionList = ActionList(self._dest._control)
