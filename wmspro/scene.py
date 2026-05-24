@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 from .room import Room
 
 
@@ -35,7 +35,7 @@ class Scene:
         return self._names[0]
 
     @property
-    def room(self) -> Room:
+    def room(self) -> Optional[Room]:
         for room in self._control.rooms.values():
             if self._id in room._scene_ids:
                 return room
@@ -50,5 +50,5 @@ class Scene:
         return {
             "id": self.id,
             "name": self.name,
-            "room": {self.room.id: self.room.name},
+            "room": {self.room.id: self.room.name} if self.room else None,
         }

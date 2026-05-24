@@ -1,3 +1,5 @@
+from collections.abc import Mapping
+from typing import Optional
 from types import MappingProxyType
 from .const import (
     WMS_WebControl_pro_API_animationType,
@@ -66,7 +68,7 @@ class Destination:
         return self._drivingCause
 
     @property
-    def room(self) -> Room:
+    def room(self) -> Optional[Room]:
         for room in self._control.rooms.values():
             if self._id in room._destination_ids:
                 return room
@@ -77,7 +79,7 @@ class Destination:
         return not (self._heartbeatError or self._blocking)
 
     @property
-    def status(self) -> dict:
+    def status(self) -> Mapping:
         return MappingProxyType(self._status)
 
     # --- Public methods ---
@@ -124,7 +126,7 @@ class Destination:
     def hasAction(
         self,
         actionDescription: WMS_WebControl_pro_API_actionDescription,
-        actionType: WMS_WebControl_pro_API_actionType = None,
+        actionType: Optional[WMS_WebControl_pro_API_actionType] = None,
     ) -> bool:
         for action in self._actions.values():
             if action.actionDescription == actionDescription and (
@@ -136,7 +138,7 @@ class Destination:
     def action(
         self,
         actionDescription: WMS_WebControl_pro_API_actionDescription,
-        actionType: WMS_WebControl_pro_API_actionType = None,
+        actionType: Optional[WMS_WebControl_pro_API_actionType] = None,
     ) -> Action:
         for action in self._actions.values():
             if action.actionDescription == actionDescription and (
@@ -157,7 +159,7 @@ class Destination:
         return {
             "id": self.id,
             "name": self.name,
-            "room": {self.room.id: self.room.name},
+            "room": {self.room.id: self.room.name} if self.room else None,
             "actions": {k: v.diag() for k, v in self._actions.items()},
             "animationType": self.animationType.name,
             "drivingCause": self.drivingCause.name,

@@ -1,6 +1,7 @@
 import asyncio
 import pprint
 from aiohttp import ClientSession
+from collections.abc import Mapping
 from types import MappingProxyType
 from typing import Any
 from .destination import Destination
@@ -115,19 +116,19 @@ class WebControlPro:
         return self._host
 
     @property
-    def config(self) -> dict:
+    def config(self) -> Mapping:
         return MappingProxyType(self._config)
 
     @property
-    def dests(self) -> dict:
+    def dests(self) -> Mapping:
         return MappingProxyType(self._dests)
 
     @property
-    def rooms(self) -> dict:
+    def rooms(self) -> Mapping:
         return MappingProxyType(self._rooms)
 
     @property
-    def scenes(self) -> dict:
+    def scenes(self) -> Mapping:
         return MappingProxyType(self._scenes)
 
 
