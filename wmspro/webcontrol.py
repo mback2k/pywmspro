@@ -24,6 +24,7 @@ from .const import (
 
 class WebControlPro:
     def __init__(self, host: str, session: ClientSession):
+        self._lock = asyncio.Lock()
         self._host = host
         self._control = f"http://{host}/commonCommand"
         self._session = session
@@ -41,8 +42,9 @@ class WebControlPro:
             "source": WMS_WebControl_pro_API_source,
         }
         data.update(kwargs)
-        async with self._session.post(url=self._control, json=data) as response:
-            return await response.json()
+        async with self._lock:
+            async with self._session.post(url=self._control, json=data) as response:
+                return await response.json()
 
     async def _ping(self) -> Any:
         return await self._commonCommand(WMS_WebControl_pro_API_command_ping)
