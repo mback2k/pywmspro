@@ -97,7 +97,7 @@ class WebControlPro:
         for dest in self._dests.values():
             if dest.name == name:
                 return dest
-        return None
+        raise KeyError(f"Destination with name '{name}' not found")
 
     def diag(self) -> dict:
         return {
