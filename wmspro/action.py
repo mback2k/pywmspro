@@ -117,4 +117,5 @@ class Action:
             "actionDescription": self.actionDescription.name,
             "attrs": self._attrs,
             "params": self._params,
+            "overwrites": self._overwrites,
         }
