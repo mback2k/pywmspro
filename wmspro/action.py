@@ -1,3 +1,6 @@
+import aiofiles
+import json
+from aiofiles.os import makedirs
 from typing import Any
 from .const import (
     WMS_WebControl_pro_API_actionType,
@@ -28,6 +31,7 @@ class Action:
     ) -> None:
         self._dest = dest
         self._id = id
+        self._persist = (dest._persist / f"{id}.json") if dest._persist else None
         self._actionType = WMS_WebControl_pro_API_actionType(actionType)
         self._actionDescription = WMS_WebControl_pro_API_actionDescription(
             actionDescription
@@ -35,6 +39,8 @@ class Action:
         self._attrs = kwargs
         self._params = {}
         self._overwrites = {}
+        self._needs_load = True
+        self._needs_save = False
 
     def __str__(self) -> str:
         return self.actionDescription.name
@@ -71,7 +77,26 @@ class Action:
     def _update_params(self, value: dict) -> None:
         self._params.update(value)
 
+    async def _load_persists(self) -> None:
+        if self._persist and self._persist.exists():
+            async with aiofiles.open(self._persist, mode='r') as f:
+                self._overwrites = json.loads(await f.read()).get("overwrites", {})
+
+    async def _save_persists(self) -> None:
+        if self._persist:
+            await makedirs(self._persist.parent, exist_ok=True)
+            async with aiofiles.open(self._persist, mode='w') as f:
+                await f.write(json.dumps({"overwrites": self._overwrites}))
+
     # --- Public methods ---
+
+    async def sync(self) -> None:
+        if self._needs_load:
+            await self._load_persists()
+            self._needs_load = False
+        if self._needs_save:
+            await self._save_persists()
+            self._needs_save = False
 
     def __getattr__(self, name: str) -> Any:
         if name in self._overwrites:
@@ -86,12 +111,14 @@ class Action:
     def __setitem__(self, name: str, value: Any) -> None:
         if name in self._attrs:
             self._overwrites[name] = value
+            self._needs_save = True
         elif name in self._params:
             self._params[name] = value
 
     def __delitem__(self, name: str) -> None:
         if name in self._overwrites:
             del self._overwrites[name]
+            self._needs_save = True
 
     def prep(self, **kwargs) -> ActionList:
         actionList = ActionList(self._dest._control)

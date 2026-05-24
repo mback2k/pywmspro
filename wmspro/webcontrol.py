@@ -2,8 +2,9 @@ import asyncio
 import pprint
 from aiohttp import ClientSession
 from collections.abc import Mapping
+from pathlib import Path
 from types import MappingProxyType
-from typing import Any
+from typing import Any, Optional
 from .destination import Destination
 from .room import Room
 from .scene import Scene
@@ -23,11 +24,12 @@ from .const import (
 
 
 class WebControlPro:
-    def __init__(self, host: str, session: ClientSession):
+    def __init__(self, host: str, session: ClientSession, persist: Optional[str] = None) -> None:
         self._lock = asyncio.Lock()
         self._host = host
         self._control = f"http://{host}/commonCommand"
         self._session = session
+        self._persist = Path(persist) if persist else None
         self._config = {}
         self._dests = {}
         self._rooms = {}

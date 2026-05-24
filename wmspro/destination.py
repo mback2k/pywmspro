@@ -21,6 +21,7 @@ class Destination:
         self._control = control
         self._id = id
         self._names = names
+        self._persist = (control._persist / str(id)) if control._persist else None
         self._actions = {action["id"]: Action(self, **action) for action in actions}
         self._animationType = WMS_WebControl_pro_API_animationType(animationType)
         self._drivingCause = WMS_WebControl_pro_API_drivingCause.Unknown
@@ -85,6 +86,8 @@ class Destination:
     # --- Public methods ---
 
     async def refresh(self) -> bool:
+        for action in self._actions.values():
+            await action.sync()
         status = await self._control._getStatus(self._id)
         if not status:
             _LOGGER.warning("Failed to get status for %s (%s)", self, self._id)
