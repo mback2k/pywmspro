@@ -106,6 +106,8 @@ class Action:
         return self._attrs.get(name)
 
     def __getitem__(self, name: str) -> Any:
+        if name in self._overwrites:
+            return self._overwrites[name]
         return self._params.get(name)
 
     def __setitem__(self, name: str, value: Any) -> None:
