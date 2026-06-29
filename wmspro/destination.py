@@ -9,6 +9,7 @@ from .const import (
 )
 from .action import Action
 from .room import Room
+import asyncio
 import logging
 
 _LOGGER = logging.getLogger(__name__)
@@ -88,14 +89,29 @@ class Destination:
     async def refresh(self) -> bool:
         for action in self._actions.values():
             await action.sync()
-        status = await self._control._getStatus(self._id)
-        if not status:
-            _LOGGER.warning("Failed to get status for %s (%s)", self, self._id)
+
+        retry = 3
+        while retry > 0:
+            status = await self._control._getStatus(self._id)
+            if not status:
+                _LOGGER.warning("Failed to get status for %s (%s)", self, self._id)
+                return False
+            if "errors" in status and 0x50005 in status["errors"]:
+                retry -= 1
+                await asyncio.sleep(1)
+                continue
+            self._status = status
+            if "details" not in status:
+                _LOGGER.warning("No details in status for %s (%s)", self, self._id)
+                return False
+            else:
+                break
+        else:
+            _LOGGER.warning(
+                "Failed to get status for %s (%s) after 3 retries", self, self._id
+            )
             return False
-        self._status = status
-        if "details" not in status:
-            _LOGGER.warning("No details in status for %s (%s)", self, self._id)
-            return False
+
         refreshed = False
         for detail in status["details"]:
             if detail["destinationId"] != self._id:
