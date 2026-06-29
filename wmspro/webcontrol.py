@@ -1,5 +1,6 @@
 import asyncio
 import pprint
+import time
 from aiohttp import ClientSession
 from collections.abc import Mapping
 from pathlib import Path
@@ -25,7 +26,10 @@ from .const import (
 
 class WebControlPro:
     def __init__(self, host: str, session: ClientSession, persist: Optional[str] = None) -> None:
-        self._lock = asyncio.Lock()
+        self._common_lock = asyncio.Lock()
+        self._status_lock = asyncio.Lock()
+        self._status_wait = 0.5
+        self._status_last = time.monotonic() - self._status_wait
         self._host = host
         self._control = f"http://{host}/commonCommand"
         self._session = session
@@ -44,7 +48,7 @@ class WebControlPro:
             "source": WMS_WebControl_pro_API_source,
         }
         data.update(kwargs)
-        async with self._lock:
+        async with self._common_lock:
             async with self._session.post(url=self._control, json=data) as response:
                 return await response.json()
 
@@ -57,9 +61,16 @@ class WebControlPro:
         )
 
     async def _getStatus(self, destinationId: int) -> Any:
-        return await self._commonCommand(
-            WMS_WebControl_pro_API_command_getStatus, destinations=[destinationId]
-        )
+        async with self._status_lock:
+            elapsed_time = time.monotonic() - self._status_last
+            if elapsed_time < self._status_wait:
+                await asyncio.sleep(self._status_wait - elapsed_time)
+            try:
+                return await self._commonCommand(
+                    WMS_WebControl_pro_API_command_getStatus, destinations=[destinationId]
+                )
+            finally:
+                self._status_last = time.monotonic()
 
     async def _action(
         self, actions: list, responseType=WMS_WebControl_pro_API_responseType.Instant
