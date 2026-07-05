@@ -90,22 +90,19 @@ class Destination:
         for action in self._actions.values():
             await action.sync()
 
-        retry = 3
-        while retry > 0:
+        for _ in range(3):
             status = await self._control._getStatus(self._id)
             if not status:
                 _LOGGER.warning("Failed to get status for %s (%s)", self, self._id)
                 return False
             if "errors" in status and 0x50005 in status["errors"]:
-                retry -= 1
                 await asyncio.sleep(1)
                 continue
             self._status = status
-            if "details" not in status:
+            if "details" not in self._status:
                 _LOGGER.warning("No details in status for %s (%s)", self, self._id)
                 return False
-            else:
-                break
+            break
         else:
             _LOGGER.warning(
                 "Failed to get status for %s (%s) after 3 retries", self, self._id
@@ -113,11 +110,10 @@ class Destination:
             return False
 
         refreshed = False
-        for detail in status["details"]:
-            if detail["destinationId"] != self._id:
+        for detail in self._status.get("details", []):
+            if detail.get("destinationId") != self._id or "data" not in detail:
                 continue
-            if "data" not in detail:
-                continue
+
             refreshed = True
             data = detail["data"]
             if "drivingCause" in data:
@@ -128,18 +124,21 @@ class Destination:
                 self._heartbeatError = data["heartbeatError"]
             if "blocking" in data:
                 self._blocking = data["blocking"]
-            for product in data["productData"]:
+
+            for product in data.get("productData", []):
                 actionId = product["actionId"]
                 if actionId in self._actions and "value" in product:
                     self._actions[actionId]._update_params(product["value"])
-                else:
-                    _LOGGER.warning(
-                        "Unknown actionId %s in productData for %s (%s)",
-                        actionId,
-                        self,
-                        self._id,
-                    )
-                    self._unknownProducts[actionId] = product
+                    continue
+
+                _LOGGER.warning(
+                    "Unknown actionId %s in productData for %s (%s)",
+                    actionId,
+                    self,
+                    self._id,
+                )
+                self._unknownProducts[actionId] = product
+
         return refreshed
 
     def hasAction(
