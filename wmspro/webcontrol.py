@@ -49,7 +49,7 @@ class WebControlPro:
         }
         data.update(kwargs)
         async with self._common_lock:
-            async with self._session.post(url=self._control, json=data) as response:
+            async with self._session.post(url=self._control, json=data, timeout=5) as response:
                 return await response.json()
 
     async def _ping(self) -> Any:
